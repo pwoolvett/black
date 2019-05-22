@@ -174,6 +174,15 @@ def read_pyproject_toml(
 
 @click.command(context_settings=dict(help_option_names=["-h", "--help"]))
 @click.option(
+    "--android",
+    is_flag=True,
+    default=False,
+    help=(
+        "Runs black in squentally, in a single thread. Required for "
+        "android python because of multiprocessing lib issues."
+    ),
+)
+@click.option(
     "-l",
     "--line-length",
     type=int,
@@ -293,6 +302,7 @@ def read_pyproject_toml(
 @click.pass_context
 def main(
     ctx: click.Context,
+    android: bool,
     line_length: int,
     check: bool,
     diff: bool,
@@ -356,6 +366,15 @@ def main(
             mode=mode,
             report=report,
         )
+    elif android:
+        for s in sources:
+            reformat_one(
+                src=s,
+                fast=fast,
+                write_back=write_back,
+                mode=mode,
+                report=report,
+            )
     else:
         loop = asyncio.get_event_loop()
         executor = ProcessPoolExecutor(max_workers=os.cpu_count())
