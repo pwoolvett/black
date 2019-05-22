@@ -370,6 +370,7 @@ def main(
         for s in sources:
             reformat_one(
                 src=s,
+                line_length=line_length,
                 fast=fast,
                 write_back=write_back,
                 mode=mode,
